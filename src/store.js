@@ -27,10 +27,13 @@ const store = new Vuex.Store({
       // Initialize connection to TestNet.
       const near = await nearApi.connect({
         nodeUrl: 'https://rpc.testnet.near.org',
+        walletUrl: 'https://wallet.testnet.near.org',
+        helperUrl: 'https://helper.testnet.near.org',
         deps: {
           keyStore: new nearApi.keyStores.BrowserLocalStorageKeyStore()
         },
-        contractName: 'mllnd.testnet'
+        contractName: 'mllnd.testnet',
+        networkId: 'default'
       });
 
       const wallet = new nearApi.WalletConnection(near);

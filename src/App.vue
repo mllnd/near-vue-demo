@@ -1,8 +1,5 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <GuestBook v-if="contract" msg="Welcome to Your Vue.js App"/>
-  </div>
+  <GuestBook v-if="contract"/>
 </template>
 
 <script>

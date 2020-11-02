@@ -1,51 +1,95 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <main>
+    <header style="display: flex; align-items: center; justify-content: space-between;">
+      <h1>NEAR Guest Book</h1>
+      <button @click="currentUser ? signOut() : signIn()">
+        {{ currentUser ? 'Log Out' : 'Log In' }}
+      </button>
+    </header>
+    <template v-if="currentUser">
+      <form @submit="sendMessage">
+        <fieldset id="fieldset">
+          <p>Sign the guest book, {{ currentUser.accountId }}!</p>
+          <p class="highlight">
+            <label for="message">Message:</label>
+            <input autocomplete="off" autofocus id="message" required/>
+          </p>
+          <p>
+            <label for="donation"> Donation (optional):</label>
+            <input autocomplete="off" :value="suggestedDonation"
+                   id="donation" :max="maxDonation" min="0" step="0.01" type="number"/>
+            <span title="NEAR Tokens">Ⓝ</span>
+          </p>
+          <button type="submit">Sign</button>
+        </fieldset>
+      </form>
+    </template>
+    <template v-else>
+      <p>
+        This app demonstrates a key element of NEAR’s UX: once an app has
+        permission to make calls on behalf of a user (that is, once a user
+        signs in), the app can make calls to the blockhain for them without
+        prompting extra confirmation. So you’ll see that if you don’t
+        include a donation, your message gets posted right to the guest book.
+      </p>
+      <p>
+        But if you do add a donation, then NEAR will double-check that
+        you’re ok with sending money to this app.
+      </p>
+      <p>
+        Go ahead and sign in to try it out!
+      </p>
+    </template>
+    <template v-if="!!currentUser && !!messages.length">
+      <h2>Messages</h2>
+      <!-- TODO: format as cards, add timestamp -->
+      <p :key="index" v-for="(message, index) in messages">
+        <strong>{{ message.sender }}</strong>:<br/>
+        {{ message.text }}
+      </p>
+    </template>
+  </main>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import { Big } from 'big.js';
+
 export default {
-  name: 'HelloWorld',
+  name: 'GuestBook',
   props: {
     msg: String,
   },
   computed: {
-    ...mapGetters(['contract'])
+    ...mapGetters(['currentUser', 'contract', 'wallet'])
   },
-  mounted() {
-    console.log('getting from computed');
-    console.log(this.contract);
+  data() {
+    return {
+      messages: [],
+      suggestedDonation: 0,
+      maxDonation: 0 // By default, set as 0.
+    };
+  },
+  async mounted() {
+    // Once the user is available, set max donation.
+    this.maxDonation = Big(this.currentUser.balance).div(10 ** 24);
+    // Get the messages and reverse them - latest on top.
+    this.messages = (await this.contract.getMessages()).reverse();
   },
   methods: {
+    signIn() {
+      this.wallet.requestSignIn(
+        'mllnd.testnet',
+        'NEAR Vue.js Guest Book'
+      );
+    },
+    signOut() {
+      this.wallet.signOut();
+      window.location.replace(window.location.origin + window.location.pathname)
+    },
+    sendMessage() {
 
+    }
   }
 };
 </script>
