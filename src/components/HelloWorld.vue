@@ -31,11 +31,23 @@
 </template>
 
 <script>
+ import { mapGetters } from 'vuex';
 export default {
   name: 'HelloWorld',
   props: {
     msg: String,
   },
+  computed: {
+    ...mapGetters(['smallNumbers', 'bigNumbers', 'contract'])
+  },
+  mounted() {
+    console.log('getting from computed');
+    console.log(this.bigNumbers);
+    console.log(this.contract);
+  },
+  methods: {
+
+  }
 };
 </script>
 
