@@ -6,26 +6,11 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    numbers: [
-      12,
-      33
-    ],
     contract: null,
     currentUser: null,
     wallet: null
   },
   getters: {
-    allnumbers: state => state.numbers,
-    smallNumbers(state) {
-      return state.numbers.filter(i => {
-        return i <= 30;
-      });
-    },
-    bigNumbers(state) {
-      return state.numbers.filter(i => {
-        return i > 30
-      });
-    },
     contract: state => state.contract,
     currentUser: state => state.currentUser,
     wallet: state => state.wallet,
