@@ -72,7 +72,9 @@ export default {
   },
   async mounted() {
     // Once the user is available, set max donation.
-    this.maxDonation = Big(this.currentUser.balance).div(10 ** 24);
+    if (this.currentUser) {
+      this.maxDonation = Big(this.currentUser.balance).div(10 ** 24);
+    }
     // Get the messages and reverse them - latest on top.
     this.messages = (await this.contract.getMessages()).reverse();
   },
