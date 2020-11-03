@@ -1,7 +1,7 @@
 {
   "name": "vue-guest-book",
   "version": "0.1.0",
-  "private": true,
+  "license": "(MIT AND Apache-2.0)",
   "scripts": {
     "build": "yarn build:contract && yarn build:web",
     "build:contract": "asb",

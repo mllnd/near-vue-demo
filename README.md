@@ -1,24 +1,5 @@
-# testrun
+# Guest Book
 
-## Project setup
-```
-yarn install
-```
+This repository contains a Vue.js rewrite of the NEAR Protocol example project `Guest Book`.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Original repository: https://github.com/near-examples/guest-book.
