@@ -1,14 +1,22 @@
 {
-  "name": "testrun",
+  "name": "vue-guest-book",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "yarn build:contract && yarn build:web",
+    "build:contract": "asb",
+    "build:contract:debug": "asb --target debug",
+    "build:web": "vue-cli-service build",
+    "deploy": "yarn build && near deploy && gh-pages -d dist/",
+    "dev": "yarn build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec yarn dev:start",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "start": "yarn deploy && vue-cli-service serve",
+    "dev:start": "cross-env VUE_APP_`cat ./neardev/dev-account.env` vue-cli-service serve"
   },
   "dependencies": {
     "big.js": "^6.0.2",
     "core-js": "^3.6.5",
+    "cross-env": "^7.0.2",
     "near-api-js": "^0.31.0",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.0.5",
@@ -18,6 +26,11 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "gh-pages": "^3.1.0",
+    "near-cli": "^1.2.0",
+    "near-sdk-as": "^2.1.0",
+    "nodemon": "^2.0.6",
+    "typescript": "^4.0.5",
     "vue-template-compiler": "^2.6.11"
   }
 }

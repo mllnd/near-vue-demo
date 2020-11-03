@@ -57,9 +57,6 @@ import { Big } from 'big.js';
 
 export default {
   name: 'GuestBook',
-  props: {
-    msg: String,
-  },
   computed: {
     ...mapGetters(['currentUser', 'contract', 'wallet'])
   },
@@ -82,7 +79,7 @@ export default {
   methods: {
     signIn() {
       this.wallet.requestSignIn(
-        'mllnd.testnet',
+        process.env.VUE_APP_CONTRACT_NAME || 'mllnd.testnet',
         'NEAR Vue.js Guest Book'
       );
     },

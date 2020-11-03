@@ -32,7 +32,7 @@ const store = new Vuex.Store({
         deps: {
           keyStore: new nearApi.keyStores.BrowserLocalStorageKeyStore()
         },
-        contractName: 'mllnd.testnet',
+        contractName: process.env.VUE_APP_CONTRACT_NAME || 'mllnd.testnet',
         networkId: 'default'
       });
 
@@ -47,7 +47,7 @@ const store = new Vuex.Store({
         }
       }
 
-      const contract = await new nearApi.Contract(wallet.account(), 'mllnd.testnet', {
+      const contract = await new nearApi.Contract(wallet.account(), process.env.VUE_APP_CONTRACT_NAME || 'mllnd.testnet', {
         viewMethods: ['getMessages'],
         changeMethods: ['addMessage'],
         sender: wallet.getAccountId()
