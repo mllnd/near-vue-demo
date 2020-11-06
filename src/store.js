@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as nearApi from 'near-api-js';
-import nearConfig from './near';
+import getConfig from './config';
 
 Vue.use(Vuex);
 
@@ -28,6 +28,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async initNear({ commit }) {
+      const nearConfig = getConfig('testnet');
       // Initialize connection to TestNet.
       const near = await nearApi.connect({
         deps: {
