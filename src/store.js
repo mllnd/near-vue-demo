@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as nearApi from 'near-api-js';
+import nearConfig from './near';
 
 Vue.use(Vuex);
 
@@ -8,32 +9,31 @@ const store = new Vuex.Store({
   state: {
     contract: null,
     currentUser: null,
-    wallet: null
+    wallet: null,
+    nearConfig: null
   },
   getters: {
     contract: state => state.contract,
     currentUser: state => state.currentUser,
     wallet: state => state.wallet,
+    nearConfig: state => state.nearConfig
   },
   mutations: {
     setupNear(state, payload) {
       state.contract = payload.contract;
       state.currentUser = payload.currentUser;
       state.wallet = payload.wallet;
+      state.nearConfig = payload.nearConfig;
     }
   },
   actions: {
     async initNear({ commit }) {
       // Initialize connection to TestNet.
       const near = await nearApi.connect({
-        nodeUrl: 'https://rpc.testnet.near.org',
-        walletUrl: 'https://wallet.testnet.near.org',
-        helperUrl: 'https://helper.testnet.near.org',
         deps: {
           keyStore: new nearApi.keyStores.BrowserLocalStorageKeyStore()
         },
-        contractName: process.env.VUE_APP_CONTRACT_NAME || 'mllnd.testnet',
-        networkId: 'default'
+        ...nearConfig
       });
 
       const wallet = new nearApi.WalletConnection(near);
@@ -53,7 +53,7 @@ const store = new Vuex.Store({
         sender: wallet.getAccountId()
       });
       // Commit and send to mutation.
-      commit('setupNear', { contract, currentUser, wallet });
+      commit('setupNear', { contract, currentUser, wallet, nearConfig });
     }
   }
 });
